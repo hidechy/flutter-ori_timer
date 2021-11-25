@@ -11,8 +11,15 @@ import 'dart:async';
 class MapDisplayScreen extends StatelessWidget {
   double lat;
   double lng;
+  double stationLat;
+  double stationLng;
 
-  MapDisplayScreen({Key? key, required this.lat, required this.lng})
+  MapDisplayScreen(
+      {Key? key,
+      required this.lat,
+      required this.lng,
+      required this.stationLat,
+      required this.stationLng})
       : super(key: key);
 
   ///
@@ -25,6 +32,8 @@ class MapDisplayScreen extends StatelessWidget {
       body: _MapDisplayScreen(
         lat: lat,
         lng: lng,
+        stationLat: stationLat,
+        stationLng: stationLng,
       ),
     );
   }
@@ -34,8 +43,14 @@ class MapDisplayScreen extends StatelessWidget {
 class _MapDisplayScreen extends HookWidget {
   double lat;
   double lng;
+  double stationLat;
+  double stationLng;
 
-  _MapDisplayScreen({required this.lat, required this.lng});
+  _MapDisplayScreen(
+      {required this.lat,
+      required this.lng,
+      required this.stationLat,
+      required this.stationLng});
 
   final Completer<GoogleMapController> _mapController = Completer();
 
@@ -85,7 +100,7 @@ class _MapDisplayScreen extends HookWidget {
                   ringColor: Colors.white,
                   fillColor: Colors.indigo,
                   onComplete: () => _goMapDisplayScreen(context: context),
-                  textStyle: TextStyle(color: Colors.white),
+                  textStyle: const TextStyle(color: Colors.white),
                 ),
                 const SizedBox(width: 30),
                 Column(
@@ -167,6 +182,8 @@ class _MapDisplayScreen extends HookWidget {
         builder: (context) => MapDisplayScreen(
           lat: _lat,
           lng: _lng,
+          stationLat: stationLat,
+          stationLng: stationLng,
         ),
       ),
     );
