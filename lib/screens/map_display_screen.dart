@@ -18,14 +18,18 @@ class MapDisplayScreen extends StatelessWidget {
   double lng;
   double stationLat;
   double stationLng;
+  String stationName;
+  String stationAddress;
 
-  MapDisplayScreen(
-      {Key? key,
-      required this.lat,
-      required this.lng,
-      required this.stationLat,
-      required this.stationLng})
-      : super(key: key);
+  MapDisplayScreen({
+    Key? key,
+    required this.lat,
+    required this.lng,
+    required this.stationLat,
+    required this.stationLng,
+    required this.stationName,
+    required this.stationAddress,
+  }) : super(key: key);
 
   ///
   @override
@@ -36,6 +40,8 @@ class MapDisplayScreen extends StatelessWidget {
         lng: lng,
         stationLat: stationLat,
         stationLng: stationLng,
+        stationName: stationName,
+        stationAddress: stationAddress,
       ),
     );
   }
@@ -47,12 +53,17 @@ class _MapDisplayScreen extends HookWidget {
   double lng;
   double stationLat;
   double stationLng;
+  String stationName;
+  String stationAddress;
 
-  _MapDisplayScreen(
-      {required this.lat,
-      required this.lng,
-      required this.stationLat,
-      required this.stationLng});
+  _MapDisplayScreen({
+    required this.lat,
+    required this.lng,
+    required this.stationLat,
+    required this.stationLng,
+    required this.stationName,
+    required this.stationAddress,
+  });
 
   final Completer<GoogleMapController> _mapController = Completer();
 
@@ -120,13 +131,6 @@ class _MapDisplayScreen extends HookWidget {
             onMapCreated: _onMapCreated,
             markers: markers.value.values.toSet(),
             zoomControlsEnabled: false,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.lightBlue.withOpacity(0.1),
-            ),
-            width: double.infinity,
-            height: double.infinity,
           ),
           Positioned(
             bottom: 0,
@@ -200,6 +204,8 @@ class _MapDisplayScreen extends HookWidget {
       desiredAccuracy: LocationAccuracy.high,
     );
 
+    markers.value.clear();
+
     final marker = Marker(
       markerId: MarkerId(
         currentPosition.timestamp.toString(),
@@ -210,9 +216,21 @@ class _MapDisplayScreen extends HookWidget {
       ),
     );
 
-    markers.value.clear();
+    markers.value['current'] = marker;
 
-    markers.value[currentPosition.timestamp.toString()] = marker;
+    /////////////////////////////
+    var marker2 = Marker(
+      markerId: MarkerId('destination'),
+      position: LatLng(stationLat, stationLng),
+      infoWindow: InfoWindow(
+        title: stationName,
+        snippet: stationAddress,
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+
+    markers.value['destination'] = marker2;
+    /////////////////////////////
 
     position.value = currentPosition;
 
@@ -269,6 +287,8 @@ class _MapDisplayScreen extends HookWidget {
           lng: _lng,
           stationLat: stationLat,
           stationLng: stationLng,
+          stationName: stationName,
+          stationAddress: stationAddress,
         ),
       ),
     );

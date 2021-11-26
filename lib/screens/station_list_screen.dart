@@ -120,10 +120,7 @@ class _StationListScreenState extends State<StationListScreen> {
                 ],
               ),
               GestureDetector(
-                onTap: () => _goMapDisplayScreen(
-                  stationLat: _stationList[index].lat,
-                  stationLng: _stationList[index].lng,
-                ),
+                onTap: () => _goMapDisplayScreen(station: _stationList[index]),
                 child: const Icon(Icons.map),
               ),
             ],
@@ -138,16 +135,17 @@ class _StationListScreenState extends State<StationListScreen> {
   /////////////////////////////////////////////////////
 
   ///
-  _goMapDisplayScreen(
-      {required String stationLat, required String stationLng}) {
+  _goMapDisplayScreen({required Eki station}) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => MapDisplayScreen(
           lat: 35.658034,
           lng: 139.701636,
-          stationLat: double.parse(stationLat),
-          stationLng: double.parse(stationLng),
+          stationLat: double.parse(station.lat),
+          stationLng: double.parse(station.lng),
+          stationName: station.stationName,
+          stationAddress: station.address,
         ),
       ),
     );
