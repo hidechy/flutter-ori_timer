@@ -5,11 +5,11 @@ import 'package:vibration/vibration.dart';
 
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../models/company.dart';
 
 class CompanySettingScreen extends StatefulWidget {
+  const CompanySettingScreen({Key? key}) : super(key: key);
+
   @override
   _CompanySettingScreenState createState() => _CompanySettingScreenState();
 }
@@ -51,15 +51,15 @@ class _CompanySettingScreenState extends State<CompanySettingScreen> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           Container(
             alignment: Alignment.topRight,
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: GestureDetector(
               onTap: () => Navigator.pop(context),
-              child: Icon(
+              child: const Icon(
                 Icons.close,
                 color: Colors.greenAccent,
               ),
@@ -125,7 +125,7 @@ class _CompanySettingScreenState extends State<CompanySettingScreen> {
 
   ///
   void _updateCompanyFlag() async {
-    if (_selectedList.length > 0) {
+    if (_selectedList.isNotEmpty) {
       String url = "http://toyohide.work/BrainLog/api/updateTrainFlag";
       Map<String, String> headers = {'content-type': 'application/json'};
       String body = json.encode({"flags": _selectedList.join(',')});

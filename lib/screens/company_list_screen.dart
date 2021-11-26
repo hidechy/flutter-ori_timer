@@ -8,6 +8,8 @@ import 'station_list_screen.dart';
 import 'company_setting_screen.dart';
 
 class CompanyListScreen extends StatefulWidget {
+  const CompanyListScreen({Key? key}) : super(key: key);
+
   @override
   _CompanyListScreenState createState() => _CompanyListScreenState();
 }
@@ -71,10 +73,10 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
           const SizedBox(height: 40),
           Container(
             alignment: Alignment.topRight,
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: GestureDetector(
               onTap: () => _goCompanySettingScreen(),
-              child: Icon(
+              child: const Icon(
                 Icons.settings,
                 color: Colors.greenAccent,
               ),
@@ -121,7 +123,7 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
             style: const TextStyle(fontSize: 12),
             child: Text(
               //'${rail.id}${rail.name}',
-              '${rail.name}',
+              rail.name,
               style: const TextStyle(fontSize: 12),
             ),
           ),
@@ -209,7 +211,7 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CompanySettingScreen(),
+        builder: (context) => const CompanySettingScreen(),
       ),
     );
   }

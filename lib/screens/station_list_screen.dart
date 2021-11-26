@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
@@ -12,7 +14,9 @@ class StationListScreen extends StatefulWidget {
   String trainName;
   String trainNumber;
 
-  StationListScreen({required this.trainName, required this.trainNumber});
+  StationListScreen(
+      {Key? key, required this.trainName, required this.trainNumber})
+      : super(key: key);
 
   @override
   _StationListScreenState createState() => _StationListScreenState();
@@ -91,7 +95,7 @@ class _StationListScreenState extends State<StationListScreen> {
               ),
             ),
           ),
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -100,15 +104,13 @@ class _StationListScreenState extends State<StationListScreen> {
                 children: [
                   Text(
                     _stationList[index].stationName,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   Text(_stationList[index].address),
                   Row(
                     children: [
                       Text(_stationList[index].lat),
-                      SizedBox(
-                        width: 40,
-                      ),
+                      const SizedBox(width: 40),
                       Text(_stationList[index].lng),
                     ],
                   ),

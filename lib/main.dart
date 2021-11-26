@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Kono Eki De Ori-Timer',
       theme: ThemeData(brightness: Brightness.dark),
       debugShowCheckedModeBanner: false,
-      home: CompanyListScreen(),
+      home: const CompanyListScreen(),
     );
   }
 }
