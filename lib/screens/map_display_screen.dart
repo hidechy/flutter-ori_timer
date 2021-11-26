@@ -170,7 +170,7 @@ class _MapDisplayScreen extends HookWidget {
                       alignment: Alignment.topRight,
                       child: GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: Icon(
+                        child: const Icon(
                           Icons.close,
                           color: Colors.greenAccent,
                         ),

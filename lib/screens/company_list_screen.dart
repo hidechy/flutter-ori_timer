@@ -8,6 +8,7 @@ import '../utility/utility.dart';
 
 import 'station_list_screen.dart';
 import 'company_setting_screen.dart';
+import 'train_route_screen.dart';
 
 class CompanyListScreen extends StatefulWidget {
   const CompanyListScreen({Key? key}) : super(key: key);
@@ -33,6 +34,8 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
   final _railList = <Rail>[];
 
   final Utility _utility = Utility();
+
+  final List<String> _selectedList = [];
 
   /// 初期動作
   @override
@@ -80,14 +83,32 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
             children: [
               const SizedBox(height: 40),
               Container(
-                alignment: Alignment.topRight,
+                width: double.infinity,
                 padding: const EdgeInsets.all(10),
-                child: GestureDetector(
-                  onTap: () => _goCompanySettingScreen(),
-                  child: const Icon(
-                    Icons.settings,
-                    color: Colors.greenAccent,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _goCompanyListScreen(),
+                          child: const Icon(
+                            Icons.refresh,
+                            color: Colors.greenAccent,
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () => _goCompanySettingScreen(),
+                          child: const Icon(
+                            Icons.settings,
+                            color: Colors.greenAccent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -110,6 +131,16 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => _goTrainRouteScreen(),
+                  child: const Text('display train route'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.pinkAccent.withOpacity(0.8),
                   ),
                 ),
               ),
@@ -174,16 +205,31 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(data[i].trainName),
-              GestureDetector(
-                onTap: () => _goStationListScreen(
-                  trainName: data[i].trainName,
-                  trainNumber: data[i].trainNumber,
-                ),
-                child: const Icon(
-                  Icons.train,
-                  color: Colors.greenAccent,
-                  size: 20,
-                ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () =>
+                        _addSelectedAry(trainNumber: data[i].trainNumber),
+                    child: Icon(
+                      Icons.vignette_rounded,
+                      color:
+                          _getSelectedBgColor(trainNumber: data[i].trainNumber),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  GestureDetector(
+                    onTap: () => _goStationListScreen(
+                      trainName: data[i].trainName,
+                      trainNumber: data[i].trainNumber,
+                    ),
+                    child: const Icon(
+                      Icons.train,
+                      color: Colors.greenAccent,
+                      size: 20,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -200,7 +246,37 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
     );
   }
 
+  ///
+  void _addSelectedAry({trainNumber}) {
+    if (_selectedList.contains(trainNumber)) {
+      _selectedList.remove(trainNumber);
+    } else {
+      _selectedList.add(trainNumber);
+    }
+
+    setState(() {});
+  }
+
+  ///
+  Color _getSelectedBgColor({trainNumber}) {
+    if (_selectedList.contains(trainNumber)) {
+      return Colors.yellowAccent;
+    } else {
+      return Colors.white.withOpacity(0.3);
+    }
+  }
+
   /////////////////////////////////////////////////////////
+
+  ///
+  void _goCompanyListScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CompanyListScreen(),
+      ),
+    );
+  }
 
   ///
   void _goStationListScreen(
@@ -224,5 +300,19 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
         builder: (context) => const CompanySettingScreen(),
       ),
     );
+  }
+
+  ///
+  void _goTrainRouteScreen() {
+    if (_selectedList.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TrainRouteScreen(
+            trainNumberList: _selectedList,
+          ),
+        ),
+      );
+    }
   }
 }
