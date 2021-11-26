@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:http/http.dart' as http;
+import 'package:vibration/vibration.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -82,13 +83,22 @@ class _MapDisplayScreen extends HookWidget {
     };
 
     final position = useState<Position>(_initialPosition);
-
     final markers = useState<Map<String, Marker>>(initialMarkers);
-
     final distance = useState("");
-
     _setCurrentLocation(position, markers, distance);
+
     _animateCamera(position);
+
+    //**********//
+    if (distance.value != "") {
+      var distanceValue = (distance.value).replaceAll(' km', '');
+      if ((double.parse(distanceValue) * 1000) < 2000) {
+        Vibration.vibrate(
+            pattern: [500, 1000, 500, 2000, 500, 1000, 500, 2000]);
+      }
+    }
+    //**********//
+
     //-----------------------------------------------//
 
     Size size = MediaQuery.of(context).size;
@@ -153,6 +163,18 @@ class _MapDisplayScreen extends HookWidget {
                         Text(_lng.toString()),
                         Text(distance.value),
                       ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.greenAccent,
+                        ),
+                      ),
                     ),
                   ),
                 ],

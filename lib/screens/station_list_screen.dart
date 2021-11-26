@@ -1,12 +1,13 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../models/station.dart';
+
+import '../utility/utility.dart';
 
 import 'map_display_screen.dart';
 
@@ -24,6 +25,8 @@ class StationListScreen extends StatefulWidget {
 
 class _StationListScreenState extends State<StationListScreen> {
   var _stationList = <Eki>[];
+
+  final Utility _utility = Utility();
 
   /// 初期動作
   @override
@@ -72,11 +75,11 @@ class _StationListScreenState extends State<StationListScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          Expanded(
-            child: _makeStationList(),
-          ),
+          _utility.getBackGround(context: context),
+          _makeStationList(),
         ],
       ),
     );

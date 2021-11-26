@@ -7,6 +7,8 @@ import 'dart:convert';
 
 import '../models/company.dart';
 
+import '../utility/utility.dart';
+
 class CompanySettingScreen extends StatefulWidget {
   const CompanySettingScreen({Key? key}) : super(key: key);
 
@@ -18,6 +20,8 @@ class _CompanySettingScreenState extends State<CompanySettingScreen> {
   List _lineList = <Line>[];
 
   final List<int> _selectedList = [];
+
+  final Utility _utility = Utility();
 
   /// 初期動作
   @override
@@ -49,54 +53,61 @@ class _CompanySettingScreenState extends State<CompanySettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          const SizedBox(
-            height: 40,
-          ),
-          Container(
-            alignment: Alignment.topRight,
-            padding: const EdgeInsets.all(10),
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(
-                Icons.close,
-                color: Colors.greenAccent,
+          _utility.getBackGround(context: context),
+          Column(
+            children: [
+              const SizedBox(
+                height: 40,
               ),
-            ),
-          ),
-          Expanded(
-            child: MediaQuery.removePadding(
-              removeTop: true,
-              context: context,
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: _getSelectedBgColor(company: _lineList[index]),
-                    child: ListTile(
-                      title: DefaultTextStyle(
-                        style: const TextStyle(fontSize: 12),
-                        child: Text(_lineList[index].companyName),
-                      ),
-                      onTap: () => _addSelectedAry(company: _lineList[index]),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 0.2),
-                itemCount: _lineList.length,
+              Container(
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.all(10),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.greenAccent,
+                  ),
+                ),
               ),
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _updateCompanyFlag(),
-              child: const Text('update'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.pinkAccent.withOpacity(0.8),
+              Expanded(
+                child: MediaQuery.removePadding(
+                  removeTop: true,
+                  context: context,
+                  child: ListView.separated(
+                    itemBuilder: (context, index) {
+                      return Card(
+                        color: _getSelectedBgColor(company: _lineList[index]),
+                        child: ListTile(
+                          title: DefaultTextStyle(
+                            style: const TextStyle(fontSize: 12),
+                            child: Text(_lineList[index].companyName),
+                          ),
+                          onTap: () =>
+                              _addSelectedAry(company: _lineList[index]),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 0.2),
+                    itemCount: _lineList.length,
+                  ),
+                ),
               ),
-            ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => _updateCompanyFlag(),
+                  child: const Text('update'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.pinkAccent.withOpacity(0.8),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 
 import '../models/company.dart';
 
+import '../utility/utility.dart';
+
 import 'station_list_screen.dart';
 import 'company_setting_screen.dart';
 
@@ -29,6 +31,8 @@ class Rail {
 
 class _CompanyListScreenState extends State<CompanyListScreen> {
   final _railList = <Rail>[];
+
+  final Utility _utility = Utility();
 
   /// 初期動作
   @override
@@ -68,42 +72,48 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          const SizedBox(height: 40),
-          Container(
-            alignment: Alignment.topRight,
-            padding: const EdgeInsets.all(10),
-            child: GestureDetector(
-              onTap: () => _goCompanySettingScreen(),
-              child: const Icon(
-                Icons.settings,
-                color: Colors.greenAccent,
-              ),
-            ),
-          ),
-          Expanded(
-            child: MediaQuery.removePadding(
-              removeTop: true,
-              context: context,
-              child: ListView(
-                children: <Widget>[
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      cardColor: Colors.black.withOpacity(0.1),
-                    ),
-                    child: ExpansionPanelList(
-                      expansionCallback: (int index, bool isExpanded) {
-                        _railList[index].isExpanded =
-                            !_railList[index].isExpanded;
-                        setState(() {});
-                      },
-                      children: _railList.map(_createPanel).toList(),
-                    ),
+          _utility.getBackGround(context: context),
+          Column(
+            children: [
+              const SizedBox(height: 40),
+              Container(
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.all(10),
+                child: GestureDetector(
+                  onTap: () => _goCompanySettingScreen(),
+                  child: const Icon(
+                    Icons.settings,
+                    color: Colors.greenAccent,
                   ),
-                ],
+                ),
               ),
-            ),
+              Expanded(
+                child: MediaQuery.removePadding(
+                  removeTop: true,
+                  context: context,
+                  child: ListView(
+                    children: <Widget>[
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                          cardColor: Colors.black.withOpacity(0.1),
+                        ),
+                        child: ExpansionPanelList(
+                          expansionCallback: (int index, bool isExpanded) {
+                            _railList[index].isExpanded =
+                                !_railList[index].isExpanded;
+                            setState(() {});
+                          },
+                          children: _railList.map(_createPanel).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
