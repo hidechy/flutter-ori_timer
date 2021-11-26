@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
 import '../models/company.dart';
-import '../models/station.dart';
 
-import 'map_display_screen.dart';
+import 'station_list_screen.dart';
+import 'company_setting_screen.dart';
 
 class CompanyListScreen extends StatefulWidget {
-  const CompanyListScreen({Key? key}) : super(key: key);
-
   @override
   _CompanyListScreenState createState() => _CompanyListScreenState();
 }
 
 class Rail {
   bool isExpanded;
+  int id;
   String name;
   List data;
 
-  Rail({required this.isExpanded, required this.name, required this.data});
+  Rail(
+      {required this.isExpanded,
+      required this.id,
+      required this.name,
+      required this.data});
 }
 
 class _CompanyListScreenState extends State<CompanyListScreen> {
   final _railList = <Rail>[];
-  var _stationList = <Eki>[];
 
   /// 初期動作
   @override
@@ -45,9 +45,14 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
     final company = companyFromJson(response.body);
 
     for (var i = 0; i < company.data.length; i++) {
+      if (company.data[i].flag == '0') {
+        continue;
+      }
+
       _railList.add(
         Rail(
           isExpanded: false,
+          id: company.data[i].companyId,
           name: company.data[i].companyName,
           data: company.data[i].train,
         ),
@@ -64,6 +69,17 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
       body: Column(
         children: [
           const SizedBox(height: 40),
+          Container(
+            alignment: Alignment.topRight,
+            padding: EdgeInsets.all(10),
+            child: GestureDetector(
+              onTap: () => _goCompanySettingScreen(),
+              child: Icon(
+                Icons.settings,
+                color: Colors.greenAccent,
+              ),
+            ),
+          ),
           Expanded(
             child: MediaQuery.removePadding(
               removeTop: true,
@@ -103,14 +119,10 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
           padding: const EdgeInsets.all(8.0),
           child: DefaultTextStyle(
             style: const TextStyle(fontSize: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  rail.name,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
+            child: Text(
+              //'${rail.id}${rail.name}',
+              '${rail.name}',
+              style: const TextStyle(fontSize: 12),
             ),
           ),
         );
@@ -151,7 +163,7 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
             children: [
               Text(data[i].trainName),
               GestureDetector(
-                onTap: () => _showUnderMenu(
+                onTap: () => _goStationListScreen(
                   trainName: data[i].trainName,
                   trainNumber: data[i].trainNumber,
                 ),
@@ -176,111 +188,28 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
     );
   }
 
-  ///
-  Future<dynamic> _showUnderMenu({trainName, trainNumber}) {
-    _getStation(trainNumber: trainNumber);
-
-    return showModalBottomSheet(
-      backgroundColor: Colors.black.withOpacity(0.1),
-      context: context,
-      builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.1),
-              border: Border(
-                top: BorderSide(
-                  color: Colors.yellowAccent.withOpacity(0.3),
-                  width: 10,
-                ),
-              ),
-            ),
-            child: _getStationList(),
-          ),
-        );
-      },
-    );
-  }
+  /////////////////////////////////////////////////////////
 
   ///
-  void _getStation({trainNumber}) async {
-    String url = "http://toyohide.work/BrainLog/api/getTrainStation";
-    Map<String, String> headers = {'content-type': 'application/json'};
-    String body = json.encode({"train_number": trainNumber});
-    var response =
-        await http.post(Uri.parse(url), headers: headers, body: body);
-    final station = stationFromJson(response.body);
-    _stationList = station.data;
-  }
-
-  ///
-  Widget _getStationList() {
-    List<Widget> _list = [];
-    for (var i = 0; i < _stationList.length; i++) {
-      _list.add(
-        Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-          ),
-          child: ListTile(
-            title: DefaultTextStyle(
-              style: const TextStyle(fontSize: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _stationList[i].stationName,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(_stationList[i].address),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(_stationList[i].lat),
-                      Text(_stationList[i].lng),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            trailing: GestureDetector(
-                onTap: () => _goMapDisplayScreen(
-                      stationLat: _stationList[i].lat,
-                      stationLng: _stationList[i].lng,
-                    ),
-                child: const Icon(Icons.map)),
-          ),
+  void _goStationListScreen(
+      {required String trainName, required String trainNumber}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StationListScreen(
+          trainName: trainName,
+          trainNumber: trainNumber,
         ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.only(left: 150),
-      child: Column(
-        children: _list,
       ),
     );
   }
 
-  /////////////////////////////////////////////////////////
-
   ///
-  void _goMapDisplayScreen(
-      {required String stationLat, required String stationLng}) {
+  void _goCompanySettingScreen() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MapDisplayScreen(
-          lat: 35.658034,
-          lng: 139.701636,
-          stationLat: double.parse(stationLat),
-          stationLng: double.parse(stationLng),
-        ),
+        builder: (context) => CompanySettingScreen(),
       ),
     );
   }

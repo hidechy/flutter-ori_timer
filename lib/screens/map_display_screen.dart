@@ -86,7 +86,64 @@ class _MapDisplayScreen extends HookWidget {
     _setCurrentLocation(position, markers);
     _animateCamera(position);
 
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            myLocationButtonEnabled: false,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                _initialPosition.latitude,
+                _initialPosition.longitude,
+              ),
+              zoom: 14.4746,
+            ),
+            onMapCreated: _mapController.complete,
+            markers: markers.value.values.toSet(),
+            zoomControlsEnabled: false,
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              width: size.width,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.5),
+              ),
+              child: Row(
+                children: [
+                  CircularCountDownTimer(
+                    duration: 10,
+                    width: MediaQuery.of(context).size.width / 10,
+                    height: MediaQuery.of(context).size.height / 10,
+                    ringColor: Colors.grey.withOpacity(0.3),
+                    fillColor: Colors.indigo,
+                    onComplete: () => _goMapDisplayScreen(context: context),
+                    textStyle: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(width: 30),
+                  DefaultTextStyle(
+                    style: TextStyle(color: Colors.black),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_lat.toString()),
+                        Text(_lng.toString()),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      /*
+      
       body: SizedBox(
         height: 600,
         child: Column(
@@ -125,11 +182,14 @@ class _MapDisplayScreen extends HookWidget {
                 ),
                 onMapCreated: _mapController.complete,
                 markers: markers.value.values.toSet(),
+                zoomControlsEnabled: false,
               ),
             ),
           ],
         ),
       ),
+      
+      */
     );
   }
 
