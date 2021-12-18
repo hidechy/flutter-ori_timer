@@ -37,6 +37,8 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
 
   final List<String> _selectedList = [];
 
+  final List<String> _selectedList2 = [];
+
   /// 初期動作
   @override
   void initState() {
@@ -188,6 +190,10 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
   Widget _getTrainDataColumn({data}) {
     List<Widget> _list = [];
     for (var i = 0; i < data.length; i++) {
+      if (data[i].pickup == '1') {
+        _selectedList2.add(data[i].trainNumber);
+      }
+
       _list.add(
         Container(
           margin: const EdgeInsets.only(right: 10),
@@ -204,9 +210,21 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(data[i].trainName),
               Row(
                 children: [
+                  Icon(
+                    Icons.star,
+                    color:
+                        _getSelectedBgColor2(trainNumber: data[i].trainNumber),
+                    size: 20,
+                  ),
+                  SizedBox(width: 10),
+                  Text(data[i].trainName),
+                ],
+              ),
+              Row(
+                children: [
+                  const SizedBox(width: 20),
                   GestureDetector(
                     onTap: () =>
                         _addSelectedAry(trainNumber: data[i].trainNumber),
@@ -261,6 +279,26 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
   Color _getSelectedBgColor({trainNumber}) {
     if (_selectedList.contains(trainNumber)) {
       return Colors.yellowAccent;
+    } else {
+      return Colors.white.withOpacity(0.3);
+    }
+  }
+
+  ///
+  void _addSelectedAry2({trainNumber}) {
+    if (_selectedList2.contains(trainNumber)) {
+      _selectedList2.remove(trainNumber);
+    } else {
+      _selectedList2.add(trainNumber);
+    }
+
+    setState(() {});
+  }
+
+  ///
+  Color _getSelectedBgColor2({trainNumber}) {
+    if (_selectedList2.contains(trainNumber)) {
+      return Colors.orangeAccent;
     } else {
       return Colors.white.withOpacity(0.3);
     }

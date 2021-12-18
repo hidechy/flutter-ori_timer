@@ -56,18 +56,22 @@ class Train {
   Train({
     required this.trainNumber,
     required this.trainName,
+    required this.pickup,
   });
 
   String trainNumber;
   String trainName;
+  String pickup;
 
   factory Train.fromJson(Map<String, dynamic> json) => Train(
         trainNumber: json["train_number"],
         trainName: json["train_name"],
+        pickup: json["pickup"],
       );
 
   Map<String, dynamic> toJson() => {
         "train_number": trainNumber,
         "train_name": trainName,
+        "pickup": pickup,
       };
 }
